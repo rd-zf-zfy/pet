@@ -1,0 +1,143 @@
+{
+  "name": "Cat Desktop Pet",
+  "style": "32x32 pixel cat desktop pet with transparent window interactions",
+  "baseFrame": {
+    "width": 32,
+    "height": 32
+  },
+  "states": {
+    "idle": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/1_Cat_Idle-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 8,
+      "rows": 1,
+      "fps": 8,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "walk": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/2_Cat_Run-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 10,
+      "rows": 1,
+      "fps": 9,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "run": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/2_Cat_Run-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 10,
+      "rows": 1,
+      "fps": 12,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "happy": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/3_Cat_Jump-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 4,
+      "rows": 1,
+      "fps": 8,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "angry": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/4_Cat_Fall-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 4,
+      "rows": 1,
+      "fps": 8,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "surprised": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/3_Cat_Jump-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 4,
+      "rows": 1,
+      "fps": 10,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "dragged": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/3_Cat_Jump-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 4,
+      "rows": 1,
+      "fps": 7,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "sleep": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/1_Cat_Idle-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 8,
+      "rows": 1,
+      "fps": 3,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "fall": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/4_Cat_Fall-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 4,
+      "rows": 1,
+      "fps": 8,
+      "mirrorDirections": {
+        "left": true
+      }
+    }
+  },
+  "effects": {
+    "heart": {
+      "sheet": "assets/generated/effects/click_heart.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "columns": 6,
+      "fps": 14
+    },
+    "star": {
+      "sheet": "assets/generated/effects/click_star.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "columns": 6,
+      "fps": 14
+    },
+    "exclaim": {
+      "sheet": "assets/generated/effects/click_exclaim.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "columns": 6,
+      "fps": 14
+    }
+  },
+  "props": {
+    "pillow": "assets/generated/props/pillow.png",
+    "snack": "assets/generated/props/snack.png",
+    "ball": "assets/generated/props/ball.png",
+    "gift": "assets/generated/props/gift.png"
+  },
+  "ui": {
+    "speech": "assets/generated/ui/speech_bubble.png",
+    "thought": "assets/generated/ui/thought_bubble.png",
+    "angry": "assets/generated/ui/angry_bubble.png"
+  }
+}

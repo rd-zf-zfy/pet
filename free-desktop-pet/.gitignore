@@ -1,0 +1,6 @@
+node_modules/
+*.log
+*-capture.png
+dist/
+out/
+tasks/

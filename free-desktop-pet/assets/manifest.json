@@ -1,0 +1,134 @@
+{
+  "name": "Free Desktop Pet Extended",
+  "style": "64x128 anime pixel desktop pet with transparent window interactions",
+  "baseFrame": {
+    "width": 64,
+    "height": 128
+  },
+  "states": {
+    "idle": {
+      "sheet": "assets/source/64X128_Idle_Free.png",
+      "frameWidth": 64,
+      "frameHeight": 128,
+      "columns": 8,
+      "rows": 4,
+      "fps": 8,
+      "directions": {
+        "front": 0,
+        "left": 1,
+        "right": 2,
+        "back": 3
+      }
+    },
+    "walk": {
+      "sheet": "assets/source/64X128_Walking_Free.png",
+      "frameWidth": 64,
+      "frameHeight": 128,
+      "columns": 10,
+      "rows": 4,
+      "fps": 10,
+      "directions": {
+        "front": 0,
+        "left": 1,
+        "right": 2,
+        "back": 3
+      }
+    },
+    "run": {
+      "sheet": "assets/source/64X128_Runing_Free.png",
+      "frameWidth": 64,
+      "frameHeight": 128,
+      "columns": 8,
+      "rows": 4,
+      "fps": 12,
+      "directions": {
+        "front": 0,
+        "left": 1,
+        "right": 2,
+        "back": 3
+      }
+    },
+    "happy": {
+      "sheet": "assets/generated/states/happy.png",
+      "frameWidth": 96,
+      "frameHeight": 128,
+      "columns": 8,
+      "rows": 1,
+      "fps": 8
+    },
+    "angry": {
+      "sheet": "assets/generated/states/angry.png",
+      "frameWidth": 96,
+      "frameHeight": 128,
+      "columns": 8,
+      "rows": 1,
+      "fps": 8
+    },
+    "surprised": {
+      "sheet": "assets/generated/states/surprised.png",
+      "frameWidth": 96,
+      "frameHeight": 128,
+      "columns": 8,
+      "rows": 1,
+      "fps": 8
+    },
+    "dragged": {
+      "sheet": "assets/generated/states/dragged.png",
+      "frameWidth": 96,
+      "frameHeight": 128,
+      "columns": 8,
+      "rows": 1,
+      "fps": 10
+    },
+    "sleep": {
+      "sheet": "assets/generated/states/sleep.png",
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "columns": 8,
+      "rows": 1,
+      "fps": 5
+    },
+    "fall": {
+      "sheet": "assets/generated/states/fall.png",
+      "frameWidth": 128,
+      "frameHeight": 128,
+      "columns": 8,
+      "rows": 1,
+      "fps": 8
+    }
+  },
+  "effects": {
+    "heart": {
+      "sheet": "assets/generated/effects/click_heart.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "columns": 6,
+      "fps": 14
+    },
+    "star": {
+      "sheet": "assets/generated/effects/click_star.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "columns": 6,
+      "fps": 14
+    },
+    "exclaim": {
+      "sheet": "assets/generated/effects/click_exclaim.png",
+      "frameWidth": 64,
+      "frameHeight": 64,
+      "columns": 6,
+      "fps": 14
+    }
+  },
+  "props": {
+    "pillow": "assets/generated/props/pillow.png",
+    "snack": "assets/generated/props/snack.png",
+    "ball": "assets/generated/props/ball.png",
+    "gift": "assets/generated/props/gift.png"
+  },
+  "ui": {
+    "speech": "assets/generated/ui/speech_bubble.png",
+    "thought": "assets/generated/ui/thought_bubble.png",
+    "angry": "assets/generated/ui/angry_bubble.png"
+  }
+}

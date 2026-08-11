@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灵刃桌宠</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main id="stage" aria-label="灵刃桌宠">
+      <div id="hud" class="hud">
+        <div class="hp-track">
+          <div id="hpFill" class="hp-fill"></div>
+        </div>
+      </div>
+      <div id="bubble" class="bubble" hidden>
+        <span id="bubbleText"></span>
+      </div>
+      <canvas id="petCanvas" width="320" height="280"></canvas>
+    </main>
+    <script src="./renderer.js"></script>
+  </body>
+</html>

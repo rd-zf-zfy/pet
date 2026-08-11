@@ -1,0 +1,74 @@
+{
+  "name": "lanyu-desktop-pet",
+  "version": "0.1.0",
+  "private": true,
+  "author": "local",
+  "description": "A transparent cross-platform pixel desktop pet.",
+  "main": "src/main.js",
+  "scripts": {
+    "assets": "powershell -ExecutionPolicy Bypass -File tools/generate-assets.ps1",
+    "start": "electron .",
+    "start:debug": "electron . --debug-window",
+    "smoke": "electron . --smoke-test",
+    "validate": "node tools/validate-assets.mjs && node --check src/main.js && node --check src/preload.js && node --check src/renderer.js",
+    "pack": "electron-builder --dir",
+    "pack:mac": "electron-builder --mac dir",
+    "dist:mac": "electron-builder --mac dmg zip",
+    "dist:win": "electron-builder --win portable"
+  },
+  "build": {
+    "appId": "com.lanyu.desktoppet",
+    "productName": "蓝羽桌宠",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "src/main.js"
+    },
+    "mac": {
+      "category": "public.app-category.entertainment",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "artifactName": "lanyu-desktop-pet-${version}-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "lanyu-desktop-pet-${version}-portable.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3"
+  }
+}

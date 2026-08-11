@@ -1,0 +1,52 @@
+{
+  "name": "Lingren Battle Pet",
+  "source": "Spritesheets.zip",
+  "frame": {
+    "width": 600,
+    "height": 400
+  },
+  "states": {
+    "idle": {
+      "sheet": "assets/source/spritesheet_idle.png",
+      "columns": 12,
+      "fps": 5,
+      "loop": true,
+      "trim": { "x": 237, "y": 90, "width": 137, "height": 276 }
+    },
+    "run": {
+      "sheet": "assets/source/spritesheet_run.png",
+      "columns": 10,
+      "fps": 12,
+      "loop": true,
+      "trim": { "x": 186, "y": 85, "width": 240, "height": 283 }
+    },
+    "jump": {
+      "sheet": "assets/source/spritesheet_jump.png",
+      "columns": 11,
+      "fps": 14,
+      "loop": false,
+      "trim": { "x": 145, "y": 92, "width": 276, "height": 274 }
+    },
+    "attack": {
+      "sheet": "assets/source/spritesheet_attack.png",
+      "columns": 13,
+      "fps": 18,
+      "loop": false,
+      "trim": { "x": 96, "y": 48, "width": 440, "height": 320 }
+    },
+    "hit": {
+      "sheet": "assets/source/spritesheet_hit.png",
+      "columns": 6,
+      "fps": 8,
+      "loop": false,
+      "trim": { "x": 241, "y": 89, "width": 192, "height": 279 }
+    },
+    "death": {
+      "sheet": "assets/source/spritesheet_death.png",
+      "columns": 6,
+      "fps": 8,
+      "loop": false,
+      "trim": { "x": 124, "y": 94, "width": 372, "height": 272 }
+    }
+  }
+}

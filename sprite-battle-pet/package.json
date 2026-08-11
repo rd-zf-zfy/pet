@@ -1,0 +1,44 @@
+{
+  "name": "lingren-desktop-pet",
+  "version": "0.1.0",
+  "private": true,
+  "author": "local",
+  "description": "A transparent battle-style desktop pet based on Spritesheets.zip.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:debug": "electron . --debug-window",
+    "smoke": "electron . --smoke-test",
+    "validate": "node tools/validate-assets.mjs && node --check src/main.js && node --check src/preload.js && node --check src/renderer.js",
+    "pack": "electron-builder --dir",
+    "dist:win": "electron-builder --win portable"
+  },
+  "build": {
+    "appId": "com.lingren.desktoppet",
+    "productName": "灵刃桌宠",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "extraMetadata": {
+      "main": "src/main.js"
+    },
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "artifactName": "lingren-desktop-pet-${version}-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "lingren-desktop-pet-${version}-portable.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3"
+  }
+}

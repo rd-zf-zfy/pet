@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>蓝羽桌宠</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div id="stage" aria-label="蓝羽桌宠">
+      <div id="bubble" class="bubble" hidden>
+        <span id="bubbleText"></span>
+      </div>
+      <canvas id="petCanvas" width="360" height="320"></canvas>
+      <section id="taskPanel" class="task-panel" aria-label="蓝羽小任务" hidden>
+        <header class="task-panel__header">
+          <div>
+            <h1>蓝羽小任务</h1>
+            <span id="taskStatus" class="task-status">待命</span>
+          </div>
+          <button id="taskClose" class="icon-button" type="button" aria-label="关闭">×</button>
+        </header>
+
+        <label class="field">
+          <span>任务</span>
+          <textarea id="taskPrompt" rows="5" placeholder="输入要交给 Codex 的任务"></textarea>
+        </label>
+
+        <label class="field">
+          <span>工作目录</span>
+          <input id="taskCwd" type="text" spellcheck="false">
+        </label>
+
+        <div class="task-actions">
+          <button id="taskRun" class="primary-button" type="button">交给蓝羽</button>
+          <button id="taskCancel" class="secondary-button" type="button" disabled>停止</button>
+        </div>
+
+        <pre id="taskOutput" class="task-output" aria-live="polite"></pre>
+      </section>
+    </div>
+    <script src="./renderer.js"></script>
+  </body>
+</html>
