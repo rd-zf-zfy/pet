@@ -37,6 +37,160 @@ body.debug-window #stage {
   cursor: grabbing;
 }
 
+.task-panel {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 12px;
+  z-index: 4;
+  box-sizing: border-box;
+  height: min(388px, calc(100vh - 150px));
+  min-height: 330px;
+  padding: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(54, 45, 35, 0.24);
+  border-radius: 8px;
+  background: rgba(252, 249, 240, 0.96);
+  box-shadow: 0 12px 28px rgba(24, 25, 30, 0.22);
+  color: #2e2b27;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+}
+
+.task-panel[hidden] {
+  display: none;
+}
+
+.task-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.task-panel h1 {
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.task-status {
+  display: block;
+  min-height: 18px;
+  color: #665d52;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.icon-button,
+.primary-button,
+.secondary-button {
+  border: 0;
+  border-radius: 7px;
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.icon-button {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  background: #ebe3d5;
+  color: #37312b;
+  font-size: 20px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4b443b;
+}
+
+.field textarea,
+.field input {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid rgba(54, 45, 35, 0.24);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #24211e;
+  font: 13px/1.45 "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+  outline: none;
+}
+
+.field textarea {
+  height: 102px;
+  padding: 9px 10px;
+  resize: none;
+}
+
+.field input {
+  height: 34px;
+  padding: 0 10px;
+}
+
+.field textarea:focus,
+.field input:focus {
+  border-color: #b56a3b;
+  box-shadow: 0 0 0 3px rgba(181, 106, 59, 0.15);
+}
+
+.task-actions {
+  display: grid;
+  grid-template-columns: 1fr 82px;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.primary-button,
+.secondary-button {
+  height: 36px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.primary-button {
+  background: #b65f37;
+  color: #ffffff;
+}
+
+.secondary-button {
+  background: #e9d2c6;
+  color: #743c2b;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled {
+  cursor: default;
+  opacity: 0.52;
+}
+
+.task-output {
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(100% - 304px);
+  min-height: 72px;
+  margin: 0;
+  padding: 9px 10px;
+  overflow: auto;
+  border: 1px solid rgba(54, 45, 35, 0.18);
+  border-radius: 7px;
+  background: rgba(31, 30, 28, 0.94);
+  color: #f2eadf;
+  font: 12px/1.45 Consolas, "Microsoft YaHei UI", monospace;
+  user-select: text;
+  white-space: pre-wrap;
+}
+
 .hud {
   display: none;
 }
@@ -77,6 +231,12 @@ body.debug-window #stage {
   text-align: center;
   box-shadow: 0 6px 16px rgba(23, 25, 30, 0.18);
   pointer-events: none;
+}
+
+body.task-panel-open .bubble {
+  top: auto;
+  bottom: 146px;
+  z-index: 5;
 }
 
 .bubble::after {

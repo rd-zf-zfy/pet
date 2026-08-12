@@ -1,0 +1,77 @@
+{
+  "name": "Cat Battle Pet",
+  "form": "cat",
+  "label": "小猫",
+  "baseFrame": {
+    "width": 32,
+    "height": 32
+  },
+  "states": {
+    "idle": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/1_Cat_Idle-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 8,
+      "fps": 8,
+      "loop": true,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "run": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/2_Cat_Run-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 10,
+      "fps": 12,
+      "loop": true,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "jump": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/3_Cat_Jump-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 4,
+      "fps": 10,
+      "loop": false,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "attack": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/3_Cat_Jump-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 4,
+      "fps": 12,
+      "loop": false,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "hit": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/4_Cat_Fall-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 4,
+      "fps": 8,
+      "loop": false,
+      "mirrorDirections": {
+        "left": true
+      }
+    },
+    "death": {
+      "sheet": "assets/source/cat/FreeCatCharacterAnimations/4_Cat_Fall-Sheet.png",
+      "frameWidth": 32,
+      "frameHeight": 32,
+      "columns": 4,
+      "fps": 5,
+      "loop": false,
+      "mirrorDirections": {
+        "left": true
+      }
+    }
+  }
+}

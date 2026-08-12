@@ -6,8 +6,12 @@ const { pathToFileURL } = require('url');
 const projectRoot = path.join(__dirname, '..');
 
 contextBridge.exposeInMainWorld('battlePetAPI', {
-  loadManifest() {
-    const manifestPath = path.join(projectRoot, 'assets', 'manifest.json');
+  loadManifest(form = 'lingren') {
+    const safeForm = String(form || 'lingren').replace(/[^a-z0-9_-]/gi, '');
+    const formManifestPath = path.join(projectRoot, 'assets', 'manifests', `${safeForm}.json`);
+    const manifestPath = fs.existsSync(formManifestPath)
+      ? formManifestPath
+      : path.join(projectRoot, 'assets', 'manifest.json');
     return JSON.parse(fs.readFileSync(manifestPath, 'utf8').replace(/^\uFEFF/, ''));
   },
   assetUrl(relativePath) {
@@ -36,6 +40,20 @@ contextBridge.exposeInMainWorld('battlePetAPI', {
   },
   openMenu() {
     ipcRenderer.send('pet-open-menu');
+  },
+  getCodexTaskDefaults() {
+    return ipcRenderer.invoke('codex-task-defaults');
+  },
+  runCodexTask(task) {
+    return ipcRenderer.invoke('codex-task-run', task);
+  },
+  cancelCodexTask() {
+    return ipcRenderer.invoke('codex-task-cancel');
+  },
+  onCodexTaskEvent(callback) {
+    const listener = (_event, message) => callback(message);
+    ipcRenderer.on('codex-task-event', listener);
+    return () => ipcRenderer.removeListener('codex-task-event', listener);
   },
   onCommand(callback) {
     ipcRenderer.on('pet-command', (_event, message) => callback(message.command, message.payload || {}));

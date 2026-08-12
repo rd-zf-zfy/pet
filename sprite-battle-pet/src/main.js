@@ -1,13 +1,17 @@
 const { app, BrowserWindow, Menu, ipcMain, screen } = require('electron');
 const fs = require('fs');
 const path = require('path');
+const { spawn } = require('child_process');
 
 let mainWindow;
 let dragOffset = { x: 0, y: 0 };
+let activeCodexTask = null;
+let codexTaskSeq = 0;
 
 const DEFAULT_SIZE = { width: 320, height: 280 };
 const isSmokeTest = process.argv.includes('--smoke-test');
 const isDebugWindow = process.argv.includes('--debug-window');
+const projectRoot = path.join(__dirname, '..');
 app.disableHardwareAcceleration();
 app.setName('灵刃桌宠');
 
@@ -19,6 +23,122 @@ function writeDebugLog(message) {
   } catch (_error) {
     // Debug logging must never prevent the packaged desktop pet from running.
   }
+}
+
+function defaultCodexCwd() {
+  const candidates = [
+    process.env.LINGREN_CODEX_CWD,
+    ...(app.isPackaged ? [] : [path.resolve(projectRoot, '..'), projectRoot]),
+    app.getPath('documents')
+  ].filter(Boolean);
+
+  return candidates.find((candidate) => {
+    try {
+      return fs.statSync(candidate).isDirectory();
+    } catch (_error) {
+      return false;
+    }
+  }) || process.cwd();
+}
+
+function normalizeTaskCwd(rawCwd) {
+  const requested = String(rawCwd || '').trim();
+  const cwd = path.resolve(requested || defaultCodexCwd());
+  const stat = fs.statSync(cwd);
+
+  if (!stat.isDirectory()) {
+    throw new Error('工作目录不是文件夹');
+  }
+
+  return cwd;
+}
+
+function codexSpawnSpec() {
+  if (process.platform !== 'win32') {
+    return { command: 'codex', prefixArgs: [], label: 'codex' };
+  }
+
+  const pathDirs = String(process.env.PATH || '')
+    .split(path.delimiter)
+    .filter(Boolean);
+
+  for (const dir of pathDirs) {
+    const codexScript = path.join(dir, 'node_modules', '@openai', 'codex', 'bin', 'codex.js');
+    if (fs.existsSync(codexScript)) {
+      const bundledNode = path.join(dir, 'node.exe');
+      const nodeCommand = fs.existsSync(bundledNode) ? bundledNode : 'node';
+      return {
+        command: nodeCommand,
+        prefixArgs: [codexScript],
+        label: `${path.basename(nodeCommand)} ${codexScript}`
+      };
+    }
+  }
+
+  return {
+    command: process.env.ComSpec || 'cmd.exe',
+    prefixArgs: ['/d', '/s', '/c', 'codex.cmd'],
+    label: 'codex.cmd'
+  };
+}
+
+function buildCodexPrompt(userPrompt) {
+  return [
+    '你正在由“灵刃桌宠”启动本地 Codex CLI 执行一个小任务。',
+    '请在当前工作目录内完成任务，避免破坏性命令；如果修改文件，最后说明修改内容和验证结果。',
+    '请用中文简明汇报。',
+    '',
+    '用户任务：',
+    userPrompt
+  ].join('\n');
+}
+
+function sendCodexTaskEvent(event) {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('codex-task-event', event);
+  }
+}
+
+function taskLogRootPath() {
+  return process.env.LINGREN_TASK_LOG_DIR
+    || (app.isPackaged ? path.join(app.getPath('userData'), 'tasks') : path.join(projectRoot, 'tasks'));
+}
+
+function ensureTaskLogDir() {
+  const taskLogRoot = taskLogRootPath();
+  fs.mkdirSync(taskLogRoot, { recursive: true });
+  return taskLogRoot;
+}
+
+function taskLogName(taskId, suffix) {
+  return path.join(ensureTaskLogDir(), `${taskId}-${suffix}`);
+}
+
+function appendTaskLog(task, text) {
+  if (!task || !task.logStream) return;
+  task.logStream.write(text);
+}
+
+function finishCodexTask(taskId, event) {
+  if (!activeCodexTask || activeCodexTask.id !== taskId) return;
+
+  const task = activeCodexTask;
+  appendTaskLog(task, `\n[${new Date().toISOString()}] ${event.type}\n`);
+  if (event.message) appendTaskLog(task, `${event.message}\n`);
+  task.logStream.end();
+  activeCodexTask = null;
+  sendCodexTaskEvent(event);
+}
+
+function killCodexProcessTree(task) {
+  if (!task || !task.process || task.process.killed) return;
+
+  if (process.platform === 'win32') {
+    spawn('taskkill.exe', ['/pid', String(task.process.pid), '/t', '/f'], { windowsHide: true });
+    return;
+  }
+
+  task.process.kill('SIGTERM');
 }
 
 function clampWindowBounds(x, y, width, height) {
@@ -59,6 +179,10 @@ function popupPetMenu() {
     { type: 'separator' },
     { label: '向左跑', click: () => sendPetCommand('run-left') },
     { label: '向右跑', click: () => sendPetCommand('run-right') },
+    { type: 'separator' },
+    { label: '变身', click: () => sendPetCommand('toggle-form') },
+    { type: 'separator' },
+    { label: '交给灵刃小任务', click: () => sendPetCommand('show-task-panel') },
     { type: 'separator' },
     {
       label: '尺寸',
@@ -166,6 +290,148 @@ ipcMain.handle('pet-window-state', () => {
     bounds,
     workArea: display.workArea
   };
+});
+
+ipcMain.handle('codex-task-defaults', () => ({
+  cwd: defaultCodexCwd(),
+  logRoot: ensureTaskLogDir(),
+  running: Boolean(activeCodexTask),
+  activeTaskId: activeCodexTask ? activeCodexTask.id : null
+}));
+
+ipcMain.handle('codex-task-run', (_event, request = {}) => {
+  if (activeCodexTask) {
+    throw new Error('已有一个小任务正在执行');
+  }
+
+  const userPrompt = String(request.prompt || '').trim();
+  if (!userPrompt) {
+    throw new Error('任务内容不能为空');
+  }
+
+  const cwd = normalizeTaskCwd(request.cwd);
+  const taskId = `${new Date().toISOString().replace(/[:.]/g, '-')}-${++codexTaskSeq}`;
+  const logPath = taskLogName(taskId, 'output.log');
+  const lastMessagePath = taskLogName(taskId, 'last-message.txt');
+  const logStream = fs.createWriteStream(logPath, { flags: 'a', encoding: 'utf8' });
+  const spawnSpec = codexSpawnSpec();
+  const args = [
+    ...spawnSpec.prefixArgs,
+    '-a',
+    'never',
+    'exec',
+    '-C',
+    cwd,
+    '--sandbox',
+    'workspace-write',
+    '--skip-git-repo-check',
+    '--color',
+    'never',
+    '-o',
+    lastMessagePath,
+    '-'
+  ];
+
+  const task = {
+    id: taskId,
+    cwd,
+    logPath,
+    lastMessagePath,
+    logStream,
+    process: null,
+    cancelled: false
+  };
+
+  activeCodexTask = task;
+  appendTaskLog(task, `[${new Date().toISOString()}] codex task started\n`);
+  appendTaskLog(task, `cwd: ${cwd}\n`);
+  appendTaskLog(task, `command: ${spawnSpec.label} ${args.slice(spawnSpec.prefixArgs.length).join(' ')}\n\n`);
+
+  const child = spawn(spawnSpec.command, args, {
+    cwd,
+    env: {
+      ...process.env,
+      FORCE_COLOR: '0',
+      NO_COLOR: '1'
+    },
+    windowsHide: true,
+    stdio: ['pipe', 'pipe', 'pipe']
+  });
+
+  task.process = child;
+
+  child.stdout.on('data', (data) => {
+    const text = data.toString('utf8');
+    appendTaskLog(task, text);
+    sendCodexTaskEvent({ type: 'stdout', taskId, text });
+  });
+
+  child.stderr.on('data', (data) => {
+    const text = data.toString('utf8');
+    appendTaskLog(task, text);
+    sendCodexTaskEvent({ type: 'stderr', taskId, text });
+  });
+
+  child.stdin.on('error', (error) => {
+    appendTaskLog(task, `stdin error: ${error.message}\n`);
+  });
+
+  child.on('error', (error) => {
+    finishCodexTask(taskId, {
+      type: 'error',
+      taskId,
+      message: `Codex 启动失败：${error.message}`,
+      logPath,
+      lastMessagePath
+    });
+  });
+
+  child.on('close', (code, signal) => {
+    if (task.cancelled) {
+      finishCodexTask(taskId, {
+        type: 'cancelled',
+        taskId,
+        code,
+        signal,
+        message: '任务已停止',
+        logPath,
+        lastMessagePath
+      });
+      return;
+    }
+
+    finishCodexTask(taskId, {
+      type: code === 0 ? 'done' : 'failed',
+      taskId,
+      code,
+      signal,
+      message: code === 0 ? '任务完成' : `任务失败，退出码 ${code}`,
+      logPath,
+      lastMessagePath
+    });
+  });
+
+  sendCodexTaskEvent({
+    type: 'started',
+    taskId,
+    cwd,
+    logPath,
+    lastMessagePath
+  });
+
+  child.stdin.end(buildCodexPrompt(userPrompt), 'utf8');
+
+  return { taskId, cwd, logPath, lastMessagePath };
+});
+
+ipcMain.handle('codex-task-cancel', () => {
+  if (!activeCodexTask) {
+    return { cancelled: false };
+  }
+
+  activeCodexTask.cancelled = true;
+  killCodexProcessTree(activeCodexTask);
+  return { cancelled: true, taskId: activeCodexTask.id };
 });
 
 ipcMain.on('pet-move-by', (_event, delta) => {
